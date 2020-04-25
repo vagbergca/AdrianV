@@ -3,11 +3,11 @@
  * ****************************************************************************************************************
  * GUI for the CMSC 255 Final Project. It allows the user to select two locations from drop-down menus
  * that they wish to measure the distance between. If the choose "Own coordinates", they will have to enter those.
- * The GUI the displays a world map with a line drawn between the two locations, and below it prints to the user
- * how far apart those two points are
+ * The GUI the displays a world map with a dashed line drawn between the two locations, and below it prints to the
+ * user how far apart those two points are
  *
  * Adrian Vagberg, Eeshan Singh, Mel Sofroniou, Ogaga Obrimah
- * April 19, 2020
+ * April 21, 2020
  * CMSC 255-901
  *****************************************************************************************************************/
 
@@ -22,7 +22,6 @@ import javafx.scene.shape.Line;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -433,11 +432,14 @@ public class LocationGUI extends Application {
 
         /*
         Create exit button and the text that displays the result using the getDistance and
-        convertDistance methods
+        convertDistance methods in a formatted String to include thousand separators in the distance
         */
         Button exitButton = new Button("Go back");
-        Text result = new Text(startLocation.getName() + " and " + endLocation.getName() + " are " +
-            convertDistance(startLocation.getDistance(endLocation), scale)+ " " + scale.toLowerCase() + " apart");
+        String resultString = String.format(
+                "%s and %s are %,d %s apart", startLocation.getName(), endLocation.getName(),
+                convertDistance(startLocation.getDistance(endLocation), scale), scale.toLowerCase()
+        );
+        Text result = new Text(resultString);
         result.setFont(Font.font("Arial", FontWeight.BOLD, 16));
 
         //Convert from lat/long coordinates to Java coordinates so that they match a 720x360 grid
@@ -504,7 +506,7 @@ public class LocationGUI extends Application {
      * @param scale A String representing the scale you wish to convert to
      * @return A double representing the distance in the new scale
      */
-    public static double convertDistance(double kilometerDistance, String scale) {
+    public static long convertDistance(double kilometerDistance, String scale) {
         //Declare variables and essential constants
         double distance;
         final double MILES_PER_KILOMETER = 0.621371;
@@ -527,7 +529,9 @@ public class LocationGUI extends Application {
         else {
             distance = -1.0;
         }
-        return distance;
+
+        //Cast to a long (in case the user picked two very far apart locations and a small scale
+        return (long) distance;
     }
 
 }
