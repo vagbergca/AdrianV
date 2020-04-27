@@ -2,15 +2,14 @@
  * LocationGUI
  * ****************************************************************************************************************
  * GUI for the CMSC 255 Final Project. It allows the user to select two locations from drop-down menus
- * that they wish to measure the distance between. If the choose "Own coordinates", they will have to enter those.
+ * that they wish to measure the distance between. If they choose "Own coordinates", they will have to enter those.
  * The GUI the displays a world map with a dashed line drawn between the two locations, and below it prints to the
  * user how far apart those two points are
  *
  * Adrian Vagberg, Eeshan Singh, Mel Sofroniou, Ogaga Obrimah
- * April 21, 2020
+ * April 27, 2020
  * CMSC 255-901
  *****************************************************************************************************************/
-
 package FinalProject;
 
 import javafx.application.Application;
@@ -48,21 +47,15 @@ public class LocationGUI extends Application {
                 " to measure the distance between.");
         welcome.setFont(Font.font("Arial", FontWeight.BOLD, 16));
 
-        //Create drop down menu so the user can use which location to start from
+        /*
+        Create a drop down menu of the names of all cities in the Location.cities array, plus an
+        option to enter their own coordinates, so that the user can choose what location to start from
+         */
         ComboBox<String> startCityDropDown = new ComboBox<>();
-        startCityDropDown.getItems().addAll(
-                "Own coordinates",
-                "New York City",
-                "Los Angeles",
-                "Chicago",
-                "Houston",
-                "Phoenix",
-                "Philadelphia",
-                "San Antonio",
-                "San Diego",
-                "Dallas",
-                "San Jose"
-        );
+        startCityDropDown.getItems().add("Own coordinates");
+        for (int i = 0; i < Location.cities.length; i++) {
+            startCityDropDown.getItems().add(Location.cities[i].getName());
+        }
         startCityDropDown.setPromptText("Where would you like to start from?");
 
         /*
@@ -78,93 +71,45 @@ public class LocationGUI extends Application {
         long1Input.setMaxWidth(232);
         startCityDropDown.setOnAction(e -> {
             /*
-            If-else statements that put the appropriate info into the text boxes and make them
-            un-editable if the user chooses a pre-existing city
-            */
-            if(startCityDropDown.getValue().equals("New York City")) {
-                lat1Input.setText("40.6635");
-                long1Input.setText("-73.9387");
-                lat1Input.setEditable(false);
-                long1Input.setEditable(false);
+            A while loop so that the appropriate coordinates are entered into the text boxes if the user
+            chooses any of the pre-existing cities. It runs until it either finds a match, or until the
+            length of the Location.cities array. The user cannot edit the coordinates if they choose an
+            existing city. If they choose "own coordinates" they will instead see example coordinates.
+             */
+            boolean matched = false;
+            int i = 0;
+            while (!matched & i < Location.cities.length) {
+                if (startCityDropDown.getValue().equals(Location.cities[i].getName())) {
+                    lat1Input.setText("" + Location.cities[i].getLatitude());
+                    long1Input.setText("" + Location.cities[i].getLongitude());
+                    lat1Input.setEditable(false);
+                    long1Input.setEditable(false);
+                    matched = true;
+                }
+                else {
+                    i++;
+                }
             }
-            else if (startCityDropDown.getValue().equals("Los Angeles")){
-                lat1Input.setText("34.0194");
-                long1Input.setText("-118.4108");
-                lat1Input.setEditable(false);
-                long1Input.setEditable(false);
-            }
-            else if (startCityDropDown.getValue().equals("Chicago")){
-                lat1Input.setText("41.8736");
-                long1Input.setText("-87.6818");
-                lat1Input.setEditable(false);
-                long1Input.setEditable(false);
-
-            }
-            else if(startCityDropDown.getValue().equals("Houston")){
-                lat1Input.setText("29.7866");
-                long1Input.setText("-95.3909");
-                lat1Input.setEditable(false);
-                long1Input.setEditable(false);
-            }
-            else if(startCityDropDown.getValue().equals("Phoenix")){
-                lat1Input.setText("35.5722");
-                long1Input.setText("-112.0901");
-                lat1Input.setEditable(false);
-                long1Input.setEditable(false);
-            }
-            else if (startCityDropDown.getValue().equals("Philadelphia")){
-                lat1Input.setText("40.0094");
-                long1Input.setText("-75.1333");
-                lat1Input.setEditable(false);
-                long1Input.setEditable(false);
-            }
-            else if(startCityDropDown.getValue().equals("San Antonio")){
-                lat1Input.setText("29.4724");
-                long1Input.setText("-98.251");
-                lat1Input.setEditable(false);
-                long1Input.setEditable(false);
-            }
-            else if(startCityDropDown.getValue().equals("San Diego")){
-                lat1Input.setText("32.8153");
-                long1Input.setText("-117.1350");
-                lat1Input.setEditable(false);
-                long1Input.setEditable(false);
-            }
-            else if(startCityDropDown.getValue().equals("Dallas")){
-                lat1Input.setText("32.7933");
-                long1Input.setText("-96.7665");
-                lat1Input.setEditable(false);
-                long1Input.setEditable(false);
-            }
-            else if(startCityDropDown.getValue().equals("San Jose")){
-                lat1Input.setText("37.2967");
-                long1Input.setText("-121.8189");
-                lat1Input.setEditable(false);
-                long1Input.setEditable(false);
-            }
-            else{
+            if (!matched) {
+                lat1Input.clear();
+                long1Input.clear();
                 lat1Input.setPromptText("e.g. 44.3617");
                 long1Input.setPromptText("e.g. -76.8104");
                 lat1Input.setEditable(true);
                 long1Input.setEditable(true);
             }
+
         });
 
-        //Drop down menu so the user can choose which location to end at
+        /*
+        Create a drop down menu of the names of all cities in the Location.cities array, plus an
+        option to enter their own coordinates, so that the user can choose what location to end at
+         */
         ComboBox<String> endCityDropDown = new ComboBox<>();
-        endCityDropDown.getItems().addAll(
-                "Own coordinates",
-                "New York City",
-                "Los Angeles",
-                "Chicago",
-                "Houston",
-                "Phoenix",
-                "Philadelphia",
-                "San Antonio",
-                "San Diego",
-                "Dallas",
-                "San Jose"
-        );
+        endCityDropDown.getItems().add("Own coordinates");
+        for (int i = 0; i < Location.cities.length; i++) {
+            endCityDropDown.getItems().add(Location.cities[i].getName());
+        }
         endCityDropDown.setPromptText("Where would you like to finish?");
 
         /*
@@ -180,71 +125,28 @@ public class LocationGUI extends Application {
         long2Input.setMaxWidth(232);
         endCityDropDown.setOnAction(e -> {
             /*
-            If-else statements that put the appropriate info into the text boxes and make them
-            un-editable if the user chooses a pre-existing city
-            */
-            if(endCityDropDown.getValue().equals("New York City")) {
-                lat2Input.setText("40.6635");
-                long2Input.setText("-73.9387");
-                lat2Input.setEditable(false);
-                long2Input.setEditable(false);
+            A while loop so that the appropriate coordinates are entered into the text boxes if the user
+            chooses any of the pre-existing cities. It runs until it either finds a match, or until the
+            length of the Location.cities array. The user cannot edit the coordinates if they choose an
+            existing city. If they choose "own coordinates" they will instead see example coordinates.
+             */
+            boolean matched = false;
+            int i = 0;
+            while (!matched & i < Location.cities.length) {
+                if (endCityDropDown.getValue().equals(Location.cities[i].getName())) {
+                    lat2Input.setText("" + Location.cities[i].getLatitude());
+                    long2Input.setText("" + Location.cities[i].getLongitude());
+                    lat2Input.setEditable(false);
+                    long2Input.setEditable(false);
+                    matched = true;
+                }
+                else {
+                    i++;
+                }
             }
-            else if (endCityDropDown.getValue().equals("Los Angeles")){
-                lat2Input.setText("34.0194");
-                long2Input.setText("-118.4108");
-                lat2Input.setEditable(false);
-                long2Input.setEditable(false);
-            }
-            else if (endCityDropDown.getValue().equals("Chicago")){
-                lat2Input.setText("41.8736");
-                long2Input.setText("-87.6818");
-                lat2Input.setEditable(false);
-                long2Input.setEditable(false);
-
-            }
-            else if(endCityDropDown.getValue().equals("Houston")){
-                lat2Input.setText("29.7866");
-                long2Input.setText("-95.3909");
-                lat2Input.setEditable(false);
-                long2Input.setEditable(false);
-            }
-            else if(endCityDropDown.getValue().equals("Phoenix")){
-                lat2Input.setText("35.5722");
-                long2Input.setText("-112.0901");
-                lat2Input.setEditable(false);
-                long2Input.setEditable(false);
-            }
-            else if (endCityDropDown.getValue().equals("Philadelphia")){
-                lat2Input.setText("40.0094");
-                long2Input.setText("-75.1333");
-                lat2Input.setEditable(false);
-                long2Input.setEditable(false);
-            }
-            else if(endCityDropDown.getValue().equals("San Antonio")){
-                lat2Input.setText("29.4724");
-                long2Input.setText("-98.251");
-                lat2Input.setEditable(false);
-                long2Input.setEditable(false);
-            }
-            else if(endCityDropDown.getValue().equals("San Diego")){
-                lat2Input.setText("32.8153");
-                long2Input.setText("-117.1350");
-                lat2Input.setEditable(false);
-                long2Input.setEditable(false);
-            }
-            else if(endCityDropDown.getValue().equals("Dallas")){
-                lat2Input.setText("32.7933");
-                long2Input.setText("-96.7665");
-                lat2Input.setEditable(false);
-                long2Input.setEditable(false);
-            }
-            else if(endCityDropDown.getValue().equals("San Jose")){
-                lat2Input.setText("37.2967");
-                long2Input.setText("-121.8189");
-                lat2Input.setEditable(false);
-                long2Input.setEditable(false);
-            }
-            else {
+            if (!matched) {
+                lat2Input.clear();
+                long2Input.clear();
                 lat2Input.setPromptText("e.g. 44.3617");
                 long2Input.setPromptText("e.g. -76.8104");
                 lat2Input.setEditable(true);
@@ -535,4 +437,3 @@ public class LocationGUI extends Application {
     }
 
 }
-
